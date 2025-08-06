@@ -128,7 +128,7 @@ inoremap <C-k> <Action>(PopupMenu-selectPrev)
 "" ========================================================
 
 " Comment lines
-map <leader>c <action>(CommentByLineComment)
+map <leader>cc <action>(CommentByLineComment)
 
 " Jump around with easymotion
 map <leader>j <Plug>(easymotion-s)
