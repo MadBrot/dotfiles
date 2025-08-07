@@ -203,6 +203,7 @@ automatically-unhide-macos-hidden-apps = true
 [workspace-to-monitor-force-assignment]
     B = 4
     G = 'built-in'
+    M = 'built-in'
     P = 'T24i-20'
     F = 'T24i-20'
     V = 'T24i-20'
