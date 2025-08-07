@@ -127,6 +127,9 @@ inoremap <C-k> <Action>(PopupMenu-selectPrev)
 "" Leader commands
 "" ========================================================
 
+map <Enter> o<ESC>
+map <S-Enter> O<ESC>
+
 " Comment lines
 map <leader>cc <action>(CommentByLineComment)
 
