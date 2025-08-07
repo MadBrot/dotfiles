@@ -4,7 +4,9 @@
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
-after-login-command = []
+after-login-command = [
+  'exec-and-forget borders active_color=0xffeb24ce inactive_color=0xff494d64 width=5.0'
+]
 
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
@@ -209,3 +211,18 @@ automatically-unhide-macos-hidden-apps = true
     V = 'T24i-20'
     D = 'T24i-20'
     S = 1
+
+[[on-window-detected]]
+    if.app-id = 'com.jetbrains.PhpStorm'
+    if.window-title-regex-substring = 'frontend'
+    run = 'move-node-to-workspace F'
+
+[[on-window-detected]]
+    if.app-id = 'com.jetbrains.PhpStorm'
+    if.window-title-regex-substring = 'backend'
+    run = 'move-node-to-workspace V'
+
+[[on-window-detected]]
+    if.app-id = 'com.jetbrains.PhpStorm'
+    if.window-title-regex-substring = 'development'
+    run = 'move-node-to-workspace D'
