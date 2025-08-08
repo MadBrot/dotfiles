@@ -209,6 +209,7 @@ automatically-unhide-macos-hidden-apps = true
     P = 'T24i-20'
     F = 'T24i-20'
     V = 'T24i-20'
+    T = 'T24i-20'
     D = 'T24i-20'
     S = 1
 
@@ -226,3 +227,7 @@ automatically-unhide-macos-hidden-apps = true
     if.app-id = 'com.jetbrains.PhpStorm'
     if.window-title-regex-substring = 'development'
     run = 'move-node-to-workspace D'
+
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome'
+    run = 'move-node-to-workspace T'
