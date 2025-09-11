@@ -130,6 +130,8 @@ inoremap <C-k> <Action>(PopupMenu-selectPrev)
 map <Enter> o<ESC>
 map <S-Enter> O<ESC>
 
+xnoremap <Leader>p \"_dP
+
 " Comment lines
 map <leader>cc <action>(CommentByLineComment)
 
