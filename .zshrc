@@ -22,3 +22,4 @@ eval "$(zoxide init zsh --cmd cd)"
 
 source <(fzf --zsh)
 
+export SSH_SK_PROVIDER=/usr/local/lib/libsk-libfido2.dylib
