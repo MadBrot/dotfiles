@@ -1,3 +1,5 @@
+cowsay -f stegosaurus 'Good day sir'
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -22,4 +24,16 @@ eval "$(zoxide init zsh --cmd cd)"
 
 source <(fzf --zsh)
 
-export SSH_SK_PROVIDER=/usr/local/lib/libsk-libfido2.dylib
+if [[ -S "$SSH_AUTH_SOCK" ]]; then
+  :
+else
+  export SSH_AUTH_SOCK="$HOME/.ssh/agent"
+fi
+
+# pnpm
+export PNPM_HOME="/Users/leon.stoelt/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

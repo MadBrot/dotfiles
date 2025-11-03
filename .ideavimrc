@@ -3,7 +3,7 @@ set incsearch
 set showmode
 set relativenumber
 set visualbell
-" set clipboard+=unnamed
+" set clipboard+=unname
 set ignorecase
 set smartcase
 set incsearch
