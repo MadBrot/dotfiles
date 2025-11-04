@@ -11,7 +11,7 @@
 
 (deflayer default
   esc  _      _  _  _  _  _  _  _  _  _  _  @enterHold
-              _  _  _  _  _  _  _  _  _  _
+              _  @c_del_s  @c_del_d  @c_del_f  _  _  _  _  _  _
               _  _  _  _  _  _  _  _  _  _
   _    _      @spcNum
 )
@@ -33,6 +33,18 @@
 (defalias
   spcNum (tap-hold-press 200 200 spc (layer-toggle symbols))
   enterHold (tap-hold-press 200 200 ret (layer-toggle arrows))
+
+  c_del_s (chord del s)
+  c_del_d (chord del d)
+  c_del_f (chord del f)
+)
+ 
+
+(defchords del 50
+  (s    ) s
+  (  d  ) d
+  (    f) f
+  (s d f) del
 )
 
 (defalias
