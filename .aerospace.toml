@@ -210,7 +210,7 @@ automatically-unhide-macos-hidden-apps = true
     V = 'T24i-20'
     T = 'T24i-20'
     D = 'T24i-20'
-    S = 1
+    E = 1
 
 [[on-window-detected]]
     if.app-id = 'com.jetbrains.PhpStorm'
@@ -241,11 +241,11 @@ automatically-unhide-macos-hidden-apps = true
 
 [[on-window-detected]]
     if.app-id = 'com.tinyspeck.slackmacgap'
-    run = 'move-node-to-workspace S'
+    run = 'move-node-to-workspace E'
 
 [[on-window-detected]]
     if.app-id = 'com.microsoft.Outlook'
-    run = 'move-node-to-workspace S'
+    run = 'move-node-to-workspace E'
 
 [[on-window-detected]]
     if.app-id = 'app.zen-browser.zen'
