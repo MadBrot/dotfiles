@@ -1,0 +1,131 @@
+(defcfg
+  process-unmapped-keys yes
+)
+
+(defsrc
+  caps grv    q  w  e  r  t  y  u  i  o  p  ret
+              a  s  d  f  g  h  j  k  l  ;
+              z  x  c  v  b  n  m  ,  .  /
+  lsft rsft   spc
+)
+
+(deflayer default
+  @btnHold1 @btnHold2 @cq @cw @ce @cr @ct @cy @cu @ci @co @cp @enterHold
+            @ca @cs @cd @cf @cg @ch @cj @ck @cl ;
+            @cz @cx c  v  b  n  m  ,  .  /
+  lsft rsft @spcNum
+)
+
+(deflayer symbols
+  lrld _      1  2  3   4      5   6   7       8   9   0  _
+              \  [  @{  @lpar  @%  @$  @rpar   @}  ]   '
+              `  @# @!  =      @@  @&  -       @^  @*  _
+  _    _      _
+)
+
+(deflayer arrows
+  _    _      _  _  _  _  _  _     _     _   _      _  _
+              _  _  _  _  _  left  down  up  right  _
+              _  _  _  _  _  _     _     _   _      _
+  _    _      _
+)
+
+(defalias
+  btnHold1 (tap-hold-press 200 200 _ (layer-toggle symbols))
+  btnHold2 (tap-hold-press 200 200 _ (layer-toggle arrows))
+
+  spcNum (tap-hold-press 200 200 spc (layer-toggle symbols))
+  enterHold (tap-hold-press 200 200 ret (layer-toggle arrows))
+
+  cq (chord combos q)
+  cw (chord combos w)
+  ce (chord combos e)
+  cr (chord combos r)
+  ct (chord combos t)
+  cy (chord combos y)
+  cu (chord combos u)
+  ci (chord combos i)
+  co (chord combos o)
+  cp (chord combos p)
+
+  ca (chord combos a)
+  cs (chord combos s)
+  cd (chord combos d)
+  cf (chord combos f)
+  cg (chord combos g)
+  ch (chord combos h)
+  cj (chord combos j)
+  ck (chord combos k)
+  cl (chord combos l)
+
+  cz (chord combos z)
+  cx (chord combos x)
+)
+
+(defchords combos 50
+  ;; single keys: preserve normal typing
+  (q      ) q
+  (  w    ) w
+  (    e  ) e
+  (      r) r
+  (t      ) t
+  (  y    ) y
+  (    u  ) u
+  (      i) i
+  (o      ) o
+  (  p    ) p
+
+  (a      ) a
+  (  s    ) s
+  (    d  ) d
+  (      f) f
+  (g      ) g
+  (  h    ) h
+  (    j  ) j
+  (      k) k
+  (l      ) l
+
+  (z      ) z
+  (  x    ) x
+
+  ;; combos
+  (s d f) del
+  (j k l) ret
+  (g h  ) =
+
+  (u i) [
+  (o p) ]
+  (i o) @{
+  (k l) @}
+  (j k) @lpar
+
+  (z x) C-a
+  (a q) C-z
+  (s w) C-x
+  (d e) C-c
+  (f r) C-v
+
+  (g t) [
+  (y h) ]
+)
+
+(defalias
+  ! S-1
+  @ S-2
+  # S-3
+  $ S-4
+  % S-5
+  ^ S-6
+  & S-7
+  * S-8
+
+  lpar S-9
+  rpar S-0
+
+  { S-[
+  } S-]
+
+  + S-=
+  | S-\
+  ~ S-`
+)

@@ -20,9 +20,79 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+
 eval "$(zoxide init zsh --cmd cd)"
 
+# Make fzf source candidates from `fd` (respects .gitignore/.ignore by default).
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --hidden --type f --strip-cwd-prefix --exclude .git --exclude node_modules --exclude Library --exclude .cache --exclude .docker --exclude .orbstack --exclude OrbStack --exclude .Trash'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND='fd --hidden --type d --strip-cwd-prefix --exclude .git --exclude node_modules --exclude Library --exclude .cache --exclude .docker --exclude .orbstack --exclude OrbStack --exclude .Trash'
+fi
+
 source <(fzf --zsh)
+
+# Completion setup.
+autoload -Uz compinit bashcompinit
+compinit
+bashcompinit
+# Include hidden files/dirs in path completion (e.g. `nvim <TAB>`).
+_comp_options+=(globdots)
+
+# pnpm completions (includes local package.json scripts for `pnpm run`).
+eval "$(pnpm completion zsh)"
+
+# Yarn v1: complete `yarn run <script>` from local package.json scripts.
+_yarn_local_scripts_completion() {
+  local -a scripts
+  if (( CURRENT == 3 )) && [[ "${words[2]}" == "run" || "${words[2]}" == "run-script" ]]; then
+    if [[ -f package.json ]] && command -v node >/dev/null 2>&1; then
+      scripts=(${(f)"$(node -e 'const fs=require(\"fs\");try{const p=JSON.parse(fs.readFileSync(\"package.json\",\"utf8\"));const s=p&&p.scripts?p.scripts:{};for(const k of Object.keys(s))console.log(k)}catch(_){ }' 2>/dev/null)"})
+      (( ${#scripts} )) && _describe 'yarn scripts' scripts && return 0
+    fi
+  fi
+  _default
+}
+compdef _yarn_local_scripts_completion yarn
+
+# Composer exposes bash completion only.
+if command -v composer >/dev/null 2>&1; then
+  eval "$(composer completion bash 2>/dev/null)"
+fi
+
+# Fuzzy completion menu.
+FZF_TAB_FILE="$(brew --prefix fzf-tab 2>/dev/null)/share/fzf-tab/fzf-tab.zsh"
+if [ -f "$FZF_TAB_FILE" ]; then
+  source "$FZF_TAB_FILE"
+fi
+
+# Use TAB like Alt+C on an empty prompt (directory picker), otherwise run completion via fzf-tab.
+_tab_or_fzf_file_widget() {
+  if [[ -z "${LBUFFER}${RBUFFER}" ]]; then
+    zle fzf-cd-widget
+  else
+    zle fzf-tab-complete
+  fi
+}
+zle -N _tab_or_fzf_file_widget
+bindkey -M emacs '^I' _tab_or_fzf_file_widget
+bindkey -M viins '^I' _tab_or_fzf_file_widget
+bindkey -M main '^I' _tab_or_fzf_file_widget
+
+# Inline history suggestions.
+ZSH_AUTOSUGGESTIONS_FILE="$(brew --prefix zsh-autosuggestions 2>/dev/null)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+if [ -f "$ZSH_AUTOSUGGESTIONS_FILE" ]; then
+  source "$ZSH_AUTOSUGGESTIONS_FILE"
+  # Keep Right Arrow for cursor movement (default zle widget).
+  bindkey '^[[C' forward-char
+  bindkey '^[OC' forward-char
+fi
 
 if [[ -S "$SSH_AUTH_SOCK" ]]; then
   :
@@ -37,3 +107,5 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+export SSH_SK_PROVIDER=/usr/local/lib/libsk-libfido2.dylib
+export PATH="$HOME/.local/bin:$PATH"
