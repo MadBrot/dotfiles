@@ -38,6 +38,14 @@ fi
 
 source <(fzf --zsh)
 
+# pnpm
+export PNPM_HOME="/Users/leon.stoelt/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
 # Completion setup.
 autoload -Uz compinit bashcompinit
 compinit
@@ -46,7 +54,18 @@ bashcompinit
 _comp_options+=(globdots)
 
 # pnpm completions (includes local package.json scripts for `pnpm run`).
-eval "$(pnpm completion zsh)"
+if command -v pnpm >/dev/null 2>&1; then
+  eval "$(pnpm completion zsh)"
+fi
+
+# npm exposes bash completion.
+if command -v npm >/dev/null 2>&1; then
+  eval "$(npm completion 2>/dev/null)"
+fi
+
+# Ensure makefile targets complete for make/gmake.
+autoload -Uz _make
+compdef _make make gmake
 
 # Yarn v1: complete `yarn run <script>` from local package.json scripts.
 _yarn_local_scripts_completion() {
@@ -64,6 +83,19 @@ compdef _yarn_local_scripts_completion yarn
 # Composer exposes bash completion only.
 if command -v composer >/dev/null 2>&1; then
   eval "$(composer completion bash 2>/dev/null)"
+fi
+
+# Optional extras: enabled only when the tool exists.
+if command -v gh >/dev/null 2>&1; then
+  eval "$(gh completion -s zsh)"
+fi
+
+if command -v docker >/dev/null 2>&1; then
+  eval "$(docker completion zsh)"
+fi
+
+if command -v kubectl >/dev/null 2>&1; then
+  source <(kubectl completion zsh)
 fi
 
 # Fuzzy completion menu.
@@ -100,12 +132,5 @@ else
   export SSH_AUTH_SOCK="$HOME/.ssh/agent"
 fi
 
-# pnpm
-export PNPM_HOME="/Users/leon.stoelt/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
 export SSH_SK_PROVIDER=/usr/local/lib/libsk-libfido2.dylib
 export PATH="$HOME/.local/bin:$PATH"

@@ -214,7 +214,7 @@ automatically-unhide-macos-hidden-apps = true
 
 [[on-window-detected]]
     if.app-id = 'com.jetbrains.PhpStorm'
-    if.window-title-regex-substring = 'frontend'
+    if.window-title-regex-substring = 'frontend|client'
     run = 'move-node-to-workspace F'
 
 [[on-window-detected]]
@@ -224,7 +224,7 @@ automatically-unhide-macos-hidden-apps = true
 
 [[on-window-detected]]
     if.app-id = 'com.jetbrains.PhpStorm'
-    if.window-title-regex-substring = 'backend'
+    if.window-title-regex-substring = 'backend|api|server'
     run = 'move-node-to-workspace V'
 
 [[on-window-detected]]
@@ -253,5 +253,17 @@ automatically-unhide-macos-hidden-apps = true
     run = 'move-node-to-workspace M'
 
 [[on-window-detected]]
+    if.app-id = 'com.spotify.client'
+    run = 'move-node-to-workspace M'
+
+[[on-window-detected]]
     if.app-id = 'app.zen-browser.zen'
     run = 'move-node-to-workspace B'
+
+[[on-window-detected]]
+    if.app-id = 'dev.kdrag0n.MacVirt' # Orbstack
+    run = 'move-node-to-workspace O'
+
+[[on-window-detected]]
+    if.app-id = 'md.obsidian' 
+    run = 'move-node-to-workspace O'

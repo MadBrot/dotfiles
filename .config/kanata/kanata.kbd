@@ -22,7 +22,7 @@
   left-side-keys   (q w e r t x   c v b) ;; these keys will always make the precedent same hand tap-hold-release-tap-keys-release output tap. B is missing because I, sometimes, alt finger it
   right-side-keys  (y u i o p m n , . /) ;; these keys will always make the precedent same hand tap-hold-release-tap-keys-release output tap
   home-row-left-keys  (a s d f g z)      ;; home row mods + z for fn  - these will output a tap if they're released after the first key
-  home-row-right-keys (h j k l ')        ;; home row mods             - these will output a tap if they're released after the first key
+  home-row-right-keys (h j k l ;)        ;; home row mods             - these will output a tap if they're released after the first key
 )
 
 ;; home row mods templates mimicking urob's timerless home row mods implementation
@@ -48,17 +48,17 @@
       )
 
       ;; home row mods
-      a (t! lhrm   $tapping-term        a @hyper     )
+      a (t! lhrm   $tapping-term        a (multi lmet lalt) )
       s (t! lhrm   $tapping-term        s lctrl      )
       d (t! lhrm   $tapping-term        d lalt       )
       f (t! lhrm   $tapping-term        f lmet       )
-      g (t! lhrm   $tapping-term        g (multi lmet lalt) )
+      g (t! lhrm   $tapping-term        g @hyper     )
   
-      h (t! rhrm   $tapping-term        h (multi lmet lalt) )
+      h (t! rhrm   $tapping-term        h @hyper )
       j (t! rhrm   $tapping-term        j lmet       )
       k (t! rhrm   $tapping-term        k lalt       )
       l (t! rhrm   $tapping-term        l lctrl      )
-      ' (t! rhrm   $tapping-term        ' @hyper     )
+      ; (t! rhrm   $tapping-term        ; (multi lmet lalt)     )
 
       ;; all the other alfas and def regular typing characters for require-prior-idle-like behavior as suggested by sgraar here (https://www.reddit.com/r/ErgoMechKeyboards/comments/1qosvc0/comment/o7cmdzd/)
       q (t! nomod q)
@@ -160,8 +160,8 @@
 
   (w e r)   esc                                                                   $combo-timeout all-released  (    nav sym fun     nomods)
   (w   r)   tab                                                                   $combo-timeout all-released  (    nav sym fun     nomods)
-  (s d f)   del                                                                  $combo-timeout first-release (    nav sym fun     nomods)   
-  (s   f)   bspc                                                                   $combo-timeout first-release (    nav sym fun     nomods)
+  (s d f)   del                                                                   $combo-timeout first-release (    nav sym fun     nomods)   
+  (s d  )   bspc                                                                  $combo-timeout first-release (    nav sym fun     nomods)
 
   (u i o)   esc                                                                   $combo-timeout all-released  (    nav sym fun     nomods) ;; esc on the right side, great for NUM
   (u   o)   tab                                                                   $combo-timeout all-released  (    nav sym fun     nomods) ;; tab on the right side, great for NUM
@@ -221,9 +221,9 @@
 
 ;; keymap
 (deflayer def
-  🔅 🔆 mctl sls dtn dnd ◀◀ ▶⏸ ▶▶ 🔇 🔉 🔊
+ 🔅 🔆 mctl sls dtn dnd ◀◀ ▶⏸ ▶▶ 🔇 🔉 🔊
  @q   @w @e    @r  @t        @y  @u  @i  @o  @p
- @a   @s @d    @f  @g        @h  @j  @k  @l  @' 
+ @a   @s @d    @f  @g        @h  @j  @k  @l  @; 
  @zfn @x @cnum @v  @b        @n  @m  @,  @.  @/
         @num @tlnav   @spc  @tlsym
 )
@@ -231,8 +231,8 @@
 (deflayer nomods ;; temporarily switch to a layer with no hold-taps to emulate ZMK require-prior-idle setting on home row mods definition
   🔅 🔆 mctl sls dtn dnd ◀◀ ▶⏸ ▶▶ 🔇 🔉 🔊
   q  w  e  r  t     y  u  i  o  p
-  a  s @d  f  g     h  j @k  l  '  ;; shift has got to be a home row mod to allow capitalization even when typing fast
-  z  x  c  v  b     n  m  ,  .  ;
+  a  s @d  f  g     h  j @k  l  ;  ;; shift has got to be a home row mod to allow capitalization even when typing fast
+  z  x  c  v  b     n  m  ,  .  /
            _  _  _  _
 )
 
@@ -247,7 +247,7 @@
 (deflayer nav
   f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
   tab   @swapper S-C-tab C-tab  M-rbrc    pgup   home  up    end   bspc
-  @osc  @osa     @oss    @osm   M-lbrc    pgdn   left  down  right enter
+  @osc  @osa     @oss    @osm   M-lbrc    left   down  up    right enter
   M-z   M-x      M-c     M-v    f18       @ppmnp f19   vold  volu  del  
                               _ _      _  _ 
 )
