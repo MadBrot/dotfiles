@@ -3,8 +3,10 @@ return {
 	group_paddings = 2,
 
 	font = {
-		text = "JetBrainsMono Nerd Font", -- Used for text
-		numbers = "JetBrainsMono Nerd Font", -- Used for numbers
+		icons = "JetBrainsMono Nerd Font Mono", -- Used for icon glyphs
+		text = "JetBrainsMono Nerd Font Mono", -- Used for text
+		numbers = "JetBrainsMono Nerd Font Mono", -- Used for numbers
+		icon_size = 20.0,
 		style_map = {
 			["Regular"] = "Regular",
 			["Semibold"] = "Medium",

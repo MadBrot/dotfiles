@@ -6,8 +6,9 @@ local battery = sbar.add("item", "widgets.battery", {
   position = "right",
   icon = {
     font = {
+      family = settings.font.icons,
       style = settings.font.style_map["Regular"],
-      size = 19.0,
+      size = settings.font.icon_size,
     }
   },
   label = { font = { family = settings.font.numbers } },

@@ -6,11 +6,11 @@ local slack = sbar.add("item", "widgets.slack", {
 	position = "right",
 	icon = {
 		string = icons.slack,
-		color = colors.magenta,
+		color = colors.mauve,
 		font = {
-			family = settings.font.text,
+			family = settings.font.icons,
 			style = settings.font.style_map["Regular"],
-			size = 14.0,
+			size = settings.font.icon_size,
 		},
 	},
 	label = {
@@ -20,12 +20,12 @@ local slack = sbar.add("item", "widgets.slack", {
 			style = settings.font.style_map["Bold"],
 			size = 9.0,
 		},
-		color = colors.white,
+		color = colors.text,
 		y_offset = 6,
 		x_offset = -4,
 	},
 	padding_right = settings.paddings,
-	update_freq = 30,
+	update_freq = 5,
 })
 
 local function update_slack()
@@ -41,12 +41,12 @@ local function update_slack()
 			local num = tonumber(count)
 			if num and num > 0 then
 				slack:set({
-					icon = { color = colors.magenta },
+					icon = { color = colors.mauve },
 					label = { string = tostring(num), drawing = true },
 				})
 			else
 				slack:set({
-					icon = { color = colors.with_alpha(colors.magenta, 0.4) },
+					icon = { color = colors.with_alpha(colors.mauve, 0.4) },
 					label = { drawing = false },
 				})
 			end

@@ -7,69 +7,76 @@ local sbar = require("sketchybar")
 local spaces = {}
 -- local space_windows = {}
 AEROSPACE_FOCUSED_SPACE = nil
+do
+	local cmd = io.popen("aerospace list-workspaces --focused 2>/dev/null")
+	if cmd then
+		AEROSPACE_FOCUSED_SPACE = cmd:read("l")
+		cmd:close()
+	end
+end
 
 local app_colors = {
 	["Code"] = colors.blue,
 	["Terminal"] = colors.green,
-	["Default"] = colors.grey,
+	["Default"] = colors.overlay1,
 	["Firefox"] = colors.orange,
-	["WezTerm"] = colors.purple,
-	["LM Studio"] = colors.purple,
-	["Microsoft Edge"] = colors.blue,
+	["WezTerm"] = colors.lavender,
+	["LM Studio"] = colors.mauve,
+	["Microsoft Edge"] = colors.sapphire,
 	["Microsoft Excel"] = colors.green,
 	["Microsoft Outlook"] = colors.blue,
 	["Microsoft PowerPoint"] = colors.red,
-	["Microsoft Teams"] = colors.purple,
+	["Microsoft Teams"] = colors.mauve,
 	["Microsoft Word"] = colors.blue,
 	["Google Chrome"] = colors.red,
-	["Maps"] = colors.green,
-	["Mail"] = colors.blue,
+	["Maps"] = colors.teal,
+	["Mail"] = colors.sky,
 	["Messages"] = colors.green,
 	["Spotify"] = colors.green,
-	["Music"] = colors.red,
-	["Slack"] = colors.purple,
+	["Music"] = colors.maroon,
+	["Slack"] = colors.mauve,
 	["Safari"] = colors.blue,
 	["PyCharm"] = colors.orange,
-	["Datagrip"] = colors.blue,
+	["Datagrip"] = colors.sapphire,
 	["Dataspell"] = colors.green,
 	["IntelliJ IDEA"] = colors.orange,
-	["Finder"] = colors.blue,
-	["Cursor"] = colors.white,
+	["Finder"] = colors.sky,
+	["Cursor"] = colors.rosewater,
 	["Home"] = colors.yellow,
 	["Notes"] = colors.yellow,
 	["Games"] = colors.orange,
 	["Photos"] = colors.red,
 	["Calendar"] = colors.red,
-	["Reminders"] = colors.purple,
+	["Reminders"] = colors.mauve,
 	["FaceTime"] = colors.green,
-	["TV"] = colors.black,
+	["TV"] = colors.lavender,
 	["Books"] = colors.brown,
-	["Podcasts"] = colors.purple,
+	["Podcasts"] = colors.mauve,
 	["News"] = colors.red,
-	["Stocks"] = colors.black,
-	["Voice Memos"] = colors.black,
+	["Stocks"] = colors.overlay2,
+	["Voice Memos"] = colors.overlay2,
 	["Contacts"] = colors.yellow,
-	["Calculator"] = colors.black,
-	["Preview"] = colors.grey,
-	["Keynote"] = colors.purple,
+	["Calculator"] = colors.overlay2,
+	["Preview"] = colors.subtext1,
+	["Keynote"] = colors.mauve,
 	["Numbers"] = colors.green,
-  ["Proton Mail"] = colors.purple,
-  ["Proton Mail Bridge"] = colors.purple,
+	["Proton Mail"] = colors.mauve,
+	["Proton Mail Bridge"] = colors.mauve,
 	["Pages"] = colors.orange,
 	["GarageBand"] = colors.green,
-	["iMovie"] = colors.purple,
-	["Weather"] = colors.blue,
-	["Journal"] = colors.magenta,
+	["iMovie"] = colors.mauve,
+	["Weather"] = colors.sky,
+	["Journal"] = colors.pink,
 	["Xcode"] = colors.blue,
 	["Find My"] = colors.green,
-	["Steam"] = colors.navy,
-	["Discord"] = colors.purple,
-	["Zoom"] = colors.blue,
+	["Steam"] = colors.sapphire,
+	["Discord"] = colors.lavender,
+	["Zoom"] = colors.sky,
 	["Stickies"] = colors.yellow,
 	["App Store"] = colors.blue,
 	["MongoDB Compass"] = colors.green,
-	["Passwords"] = colors.dark_grey,
-  ["Clock"] = colors.white,
+	["Passwords"] = colors.overlay0,
+	["Clock"] = colors.text,
 }
 
 local refresh_active_windows = function(workspace, window)
@@ -95,7 +102,7 @@ local refresh_active_windows = function(workspace, window)
 			local app_name = v["app-name"]
 			local newly_focused_window = v["window-id"] == window
 			local icon = app_icons[app_name] or app_icons["Default"]
-			local color = app_colors[app_name] or colors.grey
+			local color = app_colors[app_name] or colors.overlay1
 			if app_index > 5 then
 				sbar.set("space" .. workspace .. ".app.ellipses", {
 					drawing = true,
@@ -122,7 +129,7 @@ local refresh_active_windows = function(workspace, window)
 					},
 					background = {
 						drawing = newly_focused_window,
-						color = newly_focused_window and colors.with_alpha(colors.white, 0.2) or nil,
+						color = newly_focused_window and colors.with_alpha(colors.surface2, 0.45) or nil,
 						height = 20,
 						corner_radius = 100,
 					},
@@ -187,14 +194,14 @@ for idx, i in pairs(aerospace_spaces) do
 			string = i,
 			padding_left = 4,
 			padding_right = 0,
-			color = colors.grey,
-			highlight_color = colors.white,
+			color = colors.overlay1,
+			highlight_color = colors.text,
 		},
 		drawing = false,
 	})
 
 	for index = 1, 5 do
-		local app_color = colors.white
+		local app_color = colors.text
 		local app_icon_size = 22.0
 		sbar.add("item", "space" .. i .. ".app." .. index, {
 			position = "space." .. i, -- Place it after the workspace number
@@ -223,8 +230,8 @@ for idx, i in pairs(aerospace_spaces) do
 		align = "left",
 		icon = {
 			string = "...",
-			color = colors.grey,
-			highlight_color = colors.white,
+			color = colors.overlay1,
+			highlight_color = colors.text,
 			font = {
 				family = "sketchybar-app-font",
 				style = "Regular",
@@ -313,7 +320,7 @@ for idx, i in pairs(aerospace_spaces) do
 	space:subscribe("aerospace_workspace_change", function(env)
 		local selected = env.FOCUSED_WORKSPACE == i
 		local last_selected = env.PREV_WORKSPACE == i
-		local color = selected and colors.grey or colors.bg2
+		local color = selected and colors.overlay1 or colors.bg2
 		AEROSPACE_FOCUSED_SPACE = env.FOCUSED_WORKSPACE
 		if selected or last_selected then
 			refresh_active_windows(i)
@@ -361,7 +368,7 @@ local spaces_indicator = sbar.add("item", {
 	icon = {
 		padding_left = 8,
 		padding_right = 9,
-		color = colors.grey,
+		color = colors.overlay1,
 		string = icons.switch.on,
 	},
 	label = {
@@ -372,7 +379,7 @@ local spaces_indicator = sbar.add("item", {
 		color = colors.bg1,
 	},
 	background = {
-		color = colors.with_alpha(colors.grey, 0.0),
+		color = colors.with_alpha(colors.overlay1, 0.0),
 		border_color = colors.with_alpha(colors.bg1, 0.0),
 	},
 })
@@ -380,10 +387,15 @@ local spaces_indicator = sbar.add("item", {
 local space_window_observer = sbar.add("item", {
 	drawing = false,
 	updates = true,
+	update_freq = 5,
 })
 
 space_window_observer:subscribe("aerospace_window_focus_change", function(env)
 	refresh_active_windows(AEROSPACE_FOCUSED_SPACE, tonumber(env.FOCUSED_WINDOW))
+end)
+
+space_window_observer:subscribe("routine", function()
+	refresh_active_windows(AEROSPACE_FOCUSED_SPACE)
 end)
 
 spaces_indicator:subscribe("swap_menus_and_spaces", function(env)
@@ -415,7 +427,7 @@ spaces_indicator:subscribe("mouse.exited", function(env)
 				color = { alpha = 0.0 },
 				border_color = { alpha = 0.0 },
 			},
-			icon = { color = colors.grey },
+			icon = { color = colors.overlay1 },
 			label = { width = 0 },
 		})
 	end)

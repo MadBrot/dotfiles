@@ -15,8 +15,9 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
   icon = {
     padding_right = 0,
     font = {
+      family = settings.font.icons,
       style = settings.font.style_map["Bold"],
-      size = 9.0,
+      size = settings.font.icon_size,
     },
     string = icons.wifi.upload,
   },
@@ -26,7 +27,7 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.red,
+    color = colors.maroon,
     string = "??? Bps",
   },
   y_offset = 4,
@@ -38,8 +39,9 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
   icon = {
     padding_right = 0,
     font = {
+      family = settings.font.icons,
       style = settings.font.style_map["Bold"],
-      size = 9.0,
+      size = settings.font.icon_size,
     },
     string = icons.wifi.download,
   },
@@ -49,7 +51,7 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.blue,
+    color = colors.sky,
     string = "??? Bps",
   },
   y_offset = -4,
@@ -94,7 +96,7 @@ local ssid = sbar.add("item", {
   },
   background = {
     height = 2,
-    color = colors.grey,
+    color = colors.surface2,
     y_offset = -15
   }
 })
@@ -159,8 +161,8 @@ local router = sbar.add("item", {
 sbar.add("item", { position = "right", width = settings.group_paddings })
 
 wifi_up:subscribe("network_update", function(env)
-  local up_color = (env.upload == "000 Bps") and colors.grey or colors.red
-  local down_color = (env.download == "000 Bps") and colors.grey or colors.blue
+  local up_color = (env.upload == "000 Bps") and colors.overlay1 or colors.maroon
+  local down_color = (env.download == "000 Bps") and colors.overlay1 or colors.sky
   wifi_up:set({
     icon = { color = up_color },
     label = {
@@ -183,7 +185,7 @@ wifi:subscribe({"wifi_change", "system_woke"}, function(env)
     wifi:set({
       icon = {
         string = connected and icons.wifi.connected or icons.wifi.disconnected,
-        color = connected and colors.white or colors.red,
+        color = connected and colors.text or colors.red,
       },
     })
   end)

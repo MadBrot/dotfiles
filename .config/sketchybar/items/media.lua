@@ -1,118 +1,167 @@
-local icons = require("icons")
 local colors = require("colors")
+local settings = require("settings")
+local app_icons = require("helpers.app_icons")
 
-local whitelist = { ["Spotify"] = true,
-                    ["Music"] = true    };
+local supported_apps = {
+	["Spotify"] = true,
+	["Music"] = true,
+	["YouTube Music"] = true,
+	["Zen"] = true,
+	["Zen Browser"] = true,
+}
 
-local media_cover = sbar.add("item", {
-  position = "right",
-  background = {
-    image = {
-      string = "media.artwork",
-      scale = 0.85,
-    },
-    color = colors.transparent,
-  },
-  label = { drawing = false },
-  icon = { drawing = false },
-  drawing = false,
-  updates = true,
-  popup = {
-    align = "center",
-    horizontal = true,
-  }
+local app_bundle_ids = {
+	["Spotify"] = "com.spotify.client",
+	["Music"] = "com.apple.Music",
+	["YouTube Music"] = "app.zen-browser.zen",
+	["Zen"] = "app.zen-browser.zen",
+	["Zen Browser"] = "app.zen-browser.zen",
+}
+
+local active_app = nil
+
+local media = sbar.add("item", "media.now_playing", {
+	position = "center",
+	drawing = false,
+	updates = true,
+	update_freq = 2,
+	icon = {
+		string = app_icons["Spotify"],
+		font = {
+			family = "sketchybar-app-font",
+			style = "Regular",
+			size = 20.0,
+		},
+		padding_left = 8,
+		padding_right = 6,
+	},
+	label = {
+		max_chars = 42,
+		width = "dynamic",
+		scroll_duration = 1200,
+		font = {
+			family = settings.font.text,
+			style = settings.font.style_map["Semibold"],
+			size = 12.0,
+		},
+		color = colors.text,
+		padding_right = 10,
+	},
+	background = {
+		color = colors.with_alpha(colors.bg2, 0.45),
+		border_color = colors.with_alpha(colors.bg2, 0.45),
+		height = 30,
+		corner_radius = 10,
+	},
 })
 
-local media_artist = sbar.add("item", {
-  position = "right",
-  drawing = false,
-  padding_left = 3,
-  padding_right = 0,
-  width = 0,
-  icon = { drawing = false },
-  label = {
-    width = 0,
-    font = { size = 9 },
-    color = colors.with_alpha(colors.white, 0.6),
-    max_chars = 18,
-    y_offset = 6,
-  },
+local media_detail = sbar.add("item", "media.now_playing.detail", {
+	position = "popup." .. media.name,
+	icon = { drawing = false },
+	label = {
+		max_chars = 60,
+		width = 260,
+		align = "center",
+		font = {
+			family = settings.font.text,
+			style = settings.font.style_map["Regular"],
+			size = 11.0,
+		},
+		color = colors.subtext1,
+	},
 })
 
-local media_title = sbar.add("item", {
-  position = "right",
-  drawing = false,
-  padding_left = 3,
-  padding_right = 0,
-  icon = { drawing = false },
-  label = {
-    font = { size = 11 },
-    width = 0,
-    max_chars = 16,
-    y_offset = -5,
-  },
-})
+local function is_supported(app)
+	if supported_apps[app] then
+		return true
+	end
 
-sbar.add("item", {
-  position = "popup." .. media_cover.name,
-  icon = { string = icons.media.back },
-  label = { drawing = false },
-  click_script = "nowplaying-cli previous",
-})
-sbar.add("item", {
-  position = "popup." .. media_cover.name,
-  icon = { string = icons.media.play_pause },
-  label = { drawing = false },
-  click_script = "nowplaying-cli togglePlayPause",
-})
-sbar.add("item", {
-  position = "popup." .. media_cover.name,
-  icon = { string = icons.media.forward },
-  label = { drawing = false },
-  click_script = "nowplaying-cli next",
-})
-
-local interrupt = 0
-local function animate_detail(detail)
-  if (not detail) then interrupt = interrupt - 1 end
-  if interrupt > 0 and (not detail) then return end
-
-  sbar.animate("tanh", 30, function()
-    media_artist:set({ label = { width = detail and "dynamic" or 0 } })
-    media_title:set({ label = { width = detail and "dynamic" or 0 } })
-  end)
+	local lower = string.lower(app or "")
+	return lower:find("zen", 1, true) ~= nil
 end
 
-media_cover:subscribe("media_change", function(env)
-  if whitelist[env.INFO.app] then
-    local drawing = (env.INFO.state == "playing")
-    media_artist:set({ drawing = drawing, label = env.INFO.artist, })
-    media_title:set({ drawing = drawing, label = env.INFO.title, })
-    media_cover:set({ drawing = drawing })
+local function app_color(app)
+	if app == "Spotify" then
+		return colors.green
+	end
+	if app == "Music" then
+		return colors.red
+	end
+	return colors.lavender
+end
 
-    if drawing then
-      animate_detail(true)
-      interrupt = interrupt + 1
-      sbar.delay(5, animate_detail)
-    else
-      media_cover:set({ popup = { drawing = false } })
-    end
-  end
+local function compact_text(title, artist)
+	local clean_title = (title or ""):gsub("^%s+", ""):gsub("%s+$", "")
+	local clean_artist = (artist or ""):gsub("^%s+", ""):gsub("%s+$", "")
+
+	if clean_title ~= "" and clean_artist ~= "" and clean_title ~= clean_artist then
+		return clean_artist .. " - " .. clean_title
+	end
+	if clean_title ~= "" then
+		return clean_title
+	end
+	if clean_artist ~= "" then
+		return clean_artist
+	end
+	return nil
+end
+
+local function scrolling_text(text)
+	return text .. "       "
+end
+
+local function refresh_media()
+	sbar.exec("osascript -l JavaScript $CONFIG_DIR/helpers/media_now_playing.js", function(output)
+		local state, app, artist, title = output:match("([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t\n]*)")
+
+		if not state or state ~= "playing" or not app or app == "" or not is_supported(app) then
+			active_app = nil
+			media:set({
+				drawing = false,
+				popup = { drawing = false },
+			})
+			return
+		end
+
+		local text = compact_text(title, artist)
+		if not text then
+			active_app = nil
+			media:set({
+				drawing = false,
+				popup = { drawing = false },
+			})
+			return
+		end
+
+		active_app = app
+		media:set({
+			drawing = true,
+			icon = {
+				string = app_icons[app] or app_icons["Default"],
+				color = app_color(app),
+			},
+			label = {
+				string = scrolling_text(text),
+			},
+		})
+
+		media_detail:set({
+			label = {
+				string = app .. " - " .. text,
+			},
+		})
+	end)
+end
+
+media:subscribe({ "routine", "system_woke", "forced" }, refresh_media)
+
+media:subscribe("mouse.clicked", function()
+	local bundle_id = app_bundle_ids[active_app or ""]
+	if bundle_id then
+		sbar.exec("open -b " .. bundle_id)
+	end
 end)
 
-media_cover:subscribe("mouse.entered", function(env)
-  interrupt = interrupt + 1
-  animate_detail(true)
-end)
+refresh_media()
 
-media_cover:subscribe("mouse.exited", function(env)
-  animate_detail(false)
-end)
-
-media_cover:subscribe("mouse.clicked", function(env)
-  media_cover:set({ popup = { drawing = "toggle" }})
-end)
-
-media_title:subscribe("mouse.exited.global", function(env)
-  media_cover:set({ popup = { drawing = false }})
-end)
+return media

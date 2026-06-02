@@ -6,9 +6,9 @@ sbar.default({
   updates = "when_shown",
   icon = {
     font = {
-      family = settings.font.text,
+      family = settings.font.icons,
       style = settings.font.style_map["Bold"],
-      size = 14.0
+      size = settings.font.icon_size
     },
     color = colors.white,
     padding_left = settings.paddings,

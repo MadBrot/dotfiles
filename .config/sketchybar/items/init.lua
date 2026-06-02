@@ -4,7 +4,7 @@ local spaces = require("items.spaces")
 local front_app = require("items.front_app")
 local calendar = require("items.calendar")
 local widgets = require("items.widgets")
--- require("items.media")
+local media = require("items.media")
 local colors = require("colors")
 
 -- local right_elements = {}

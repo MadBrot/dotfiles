@@ -4,7 +4,7 @@ local settings = require("settings")
 
 local ram = sbar.add("graph", "widgets.ram", 42, {
 	position = "right",
-	graph = { color = colors.magenta },
+	graph = { color = colors.mauve },
 	background = {
 		height = 30,
 		color = { alpha = 0 },
@@ -36,7 +36,7 @@ local function update_ram()
 
 		ram:push({ pct / 100.0 })
 
-		local color = colors.magenta
+		local color = colors.mauve
 		if pct > 80 then
 			color = colors.red
 		elseif pct > 60 then
